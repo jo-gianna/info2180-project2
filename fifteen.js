@@ -8,6 +8,8 @@ let count = 0;
 
 for(var i=0; i<c.length ;i++){
 	c[i].classList.add("puzzlepiece");
+    c[i].style.backgroundPosition = x_axis*-1 + "px " + y_axis*-1 +"px";
+
 	c[i].style.top = y_axis+"px";
 	c[i].style.left = x_axis+"px";
 
