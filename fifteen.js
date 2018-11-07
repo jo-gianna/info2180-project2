@@ -1,6 +1,9 @@
+
+
 window.onload = function(){
 	const puzzlearea = $("#puzzlearea");
 	const c = puzzlearea.children();
+
 	let x_axis = 0;
 	let y_axis =0;
 	let count = 0;
@@ -8,26 +11,58 @@ window.onload = function(){
 	var bx_axis = 300;
 	var by_axis = 300;
 
-	var sLeft = new Array();
-	var sTop = new Array();
+	var solvedLeft = new Array();
+	var solvedTop = new Array();
 
-	var shuffleButton = $("shuffleButton");
+	var shuffleButton = document.getElementById("shufflebutton");
+	shuffleButton.addEventListener("click",function(){shuffle();},false);
+
+	var backgrounds = ["Faculty of Science & Technology", 
+						"Biochemistry","Chemistry", 
+						"Computing", "Life Science", 
+						"Mathematics", "Geography & Geology"];
+	var bPics = {"Faculty of Science & Technology": "scitech.jpg", 
+					"Biochemistry": "biochem.jpg",
+					"Chemistry": "chemistry.jpg", 
+					"Computing": "computing.jpg", 
+					"Life Science": "life science.jpg", 
+					"Mathematics":"math.jpg", 
+					"Geography & Geology":"geo.jpg"};
+
+	var contol = document.getElementById("controls");
+	var select = document.createElement("select");
+	var button = document.createElement("button");
+	button.innerHTML = "Change Background";
+	controls.appendChild(select);
+	controls.appendChild(button);
+
+	var random_pic = backgrounds[Math.floor(Math.random()*backgrounds.length)];
+	for(var n = 0; n <puzzlearea.length; n++){
+		puzzlearea[n].style.backgroundImage = "url(" + bPics[random_pic] + ")";
+	}
+	for(var index = 0; index < backgrounds.length; index++){
+		var option = document.createElement("option");
+		option.text = backgrounds[index];
+		select.add(option);
+
+	}
 
 	for(i=0; i<c.length ;i++){
 		
 		c[i].classList.add("puzzlepiece");
+		
   	    c[i].style.backgroundPosition = x_axis*-1 + "px " + y_axis*-1 +"px";
 
 		c[i].style.top = y_axis+"px";
-		sTop.push(c[i].style.top);
+		solvedTop.push(c[i].style.top);
 		c[i].style.left = x_axis+"px";
-		sLeft.push(c[i].style.left);
+		solvedLeft.push(c[i].style.left);
 
-		(function(){
+		//(function(){
 			var position = i;
 			c[i].addEventListener("click", function(){move(position);}, false);
 			c[i].addEventListener("mouseover", function(){isMovable(position);}, false);
-		}());
+		//}());
 		x_axis+=100;
 		count++;
 
@@ -37,8 +72,12 @@ window.onload = function(){
 		}
 	
 	}
-
-	shuffleButton.addEventListener("click",function(){shuffle();},false);
+	button.addEventListener("click",function(){
+		var chosen_pic = select.options[select.selectedIndex].text;
+		for(var n = 0; n < puzzlearea.length; n++){
+			puzzlearea[n].style.backgroundImage = "url(" + bPics[chosen_pic] + ")";
+		}
+	});
 
 	function move(tile_num){
 		//console.log(tile_num);
@@ -50,7 +89,7 @@ window.onload = function(){
 			by_axis = c[tile_num].style.top;
 			c[tile_num].style.left = tempx+"px";
 			c[tile_num].style.top = tempy+"px";
-			for(var i=0;i<c.length;i++){
+			for(var i=0; i<c.length; i++){
 				c[i].classList.remove('movablepiece');
 			}
 		}
@@ -71,10 +110,11 @@ window.onload = function(){
 
 		
 	}
+
 	var validTiles = new Array();
 	let tile = 0;
 	function shuffle(){
-		for (i=0; i<300; i++){
+		for (i=0; i<1000; i++){
 			for(var a=0; a<c.length; a++){
 				if(isMovable){
 					validTiles.push(a);
@@ -85,21 +125,22 @@ window.onload = function(){
 		}
 		for(i=0; i<c.length; i++)
 		{
-			/*c[i].classList.add("puzzlepiece");
-  	    	c[i].style.backgroundPosition = x_axis*-1 + "px " + y_axis*-1 +"px";*/
+			c[i].classList.add("puzzlepiece");
+  	    	c[i].style.backgroundPosition = x_axis*-1 + "px " + y_axis*-1 +"px";
 			c[i].style.backgroundImage = "url('background.jpg')";//reset image for unsolved puzzle
 			c[i].style.borderColor = "black";//set border color to black
 			c[i].style.backgroundSize = "400px 400px";// let image size and grid size be the same
 			
 		}
 	}
+	
 	function isSolved(){
 		for (i=0;i<c.length;i++){
-			if(puzzleArea[i].style.left!=sLeft[i] || puzzleArea[i].style.top!=sop[i]){
+			if(puzzleArea[i].style.left!=solvedLeft[i] || puzzleArea[i].style.top!=solvedTop[i]){
 				return false;
 			}
 		}
 		return true;
 	}
-	shuffle();
+	//shuffle();
 }
